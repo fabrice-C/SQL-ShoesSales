@@ -1,0 +1,123 @@
+﻿# Database Ventes_Chaussures
+# ------------------------------------------------------------
+
+
+CREATE DATABASE `Ventes_Chaussures` DEFAULT CHARACTER SET = `utf8`;
+USE `Ventes_Chaussures`;
+
+
+
+
+# Table client
+# ------------------------------------------------------------
+
+
+CREATE TABLE `client` (
+  `idClt` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `nom` varchar(255) NOT NULL DEFAULT '',  
+  `prenom` varchar(255) NOT NULL DEFAULT '',
+  `email` varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`idClt`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+
+# Table livraison
+# ------------------------------------------------------------
+
+
+CREATE TABLE `livraison` (
+  `idLiv` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `id_clientL` int(11) unsigned NOT NULL,
+  `adresse1` varchar(255) NOT NULL DEFAULT '',
+  `adresse2` varchar(255) DEFAULT '',
+  `CP` varchar(5) NOT NULL DEFAULT '',
+  `ville` varchar(255) NOT NULL DEFAULT '',
+  `telephone` varchar(14) NOT NULL DEFAULT '',
+  PRIMARY KEY (`idLiv`),
+  KEY `fk_client_liv` (`id_clientL`),
+  CONSTRAINT `fk_client_liv` FOREIGN KEY (`id_clientL`) REFERENCES `client` (`idClt`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+
+# Table pointure
+# ------------------------------------------------------------
+
+
+CREATE TABLE `pointure` (
+  `idPointure` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `taille` varchar(2) NOT NULL DEFAULT '',
+  PRIMARY KEY (`idPointure`),
+  UNIQUE KEY `taille` (`taille`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+
+# Table chaussures
+# ------------------------------------------------------------
+
+
+CREATE TABLE `chaussures` (
+  `idShoes` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `marque` varchar(255) NOT NULL DEFAULT '',
+  `modèle` varchar(255) NOT NULL DEFAULT '',
+  `couleur` varchar(255) NOT NULL DEFAULT '',
+  `prix` DOUBLE,
+  PRIMARY KEY (`idShoes`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+
+
+
+
+
+
+
+
+
+# Table shoes_pointure
+# ------------------------------------------------------------
+
+
+CREATE TABLE `shoes_pointure` (
+  `shoes_id` int(11) unsigned NOT NULL,
+  `pointure_id` int(11) unsigned NOT NULL,
+  PRIMARY KEY (`shoes_id`,`pointure_id`),
+  KEY `fk_shoes_pointure_shoes_id` (`shoes_id`),
+  CONSTRAINT `fk_shoes_pointure_shoes_id` FOREIGN KEY (`shoes_id`) REFERENCES `chaussures` (`idShoes`),
+  CONSTRAINT `fk_shoes_pointure_pointure_id` FOREIGN KEY (`pointure_id`) REFERENCES `pointure` (`idpointure`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+
+
+
+# Table commande
+# ------------------------------------------------------------
+
+
+CREATE TABLE `commande` (
+  `idCde` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `REF_Commande` varchar(255) NOT NULL DEFAULT '',
+  `qté` int(11) unsigned NOT NULL DEFAULT '1',
+  `date_commande` date NOT NULL,
+  `Montant` double,
+  `clt_id` int(11) unsigned NOT NULL,
+  `liv_id` int(11) unsigned NOT NULL,
+  `chaussure_id` int(11) unsigned NOT NULL,
+  PRIMARY KEY (`idCde`),
+  KEY `fk_chaussure` (`chaussure_id`),
+  KEY `fk_client` (`clt_id`),
+  KEY `fk_livraison` (`liv_id`),
+  CONSTRAINT `fk_client` FOREIGN KEY (`clt_id`) REFERENCES `client` (`idClt`),
+  CONSTRAINT `fk_chaussure` FOREIGN KEY (`chaussure_id`) REFERENCES `chaussures` (`idShoes`),
+  CONSTRAINT `fk_livraison` FOREIGN KEY (`liv_id`) REFERENCES `livraison` (`idLiv`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
